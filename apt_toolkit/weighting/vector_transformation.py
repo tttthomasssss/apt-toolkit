@@ -159,7 +159,7 @@ def ppmi_vectors(vector_in_file, out_base_path, cds=1., k=1., cache=False, count
 				 count_cache_file_name='wikipedia', count_cache_base_path=os.path.join(path_utils.get_external_dataset_path(), 'wikipedia', 'vectors'),
 				 logging_freq=1000, pmi_mode='standard', exclude_composed_vectors=True, composed_vector_prefix='__CV_', force_rewrite=False):
 
-	# Path wanking
+	# Path fiddling
 	norm = '_norm' if 'norm' in vector_in_file else ''
 
 	pmi_suffix = '_sppmi' if k > 1. else '_pmi'
