@@ -17,11 +17,11 @@ _Further note, the pipeline currently is only tested with the `Stanford Parser`.
 
 * **Splitting the full file into chunks**
 
-	see `construction/chunking.py`
+	see `apt_toolkit/construction/chunking.py`
 	
 	_Usage as script:_
 	
-			python -m construction.chunking --action split_tsv_file --input-path path/to/file --input-file the_file.tsv --output-path path/to/output --output-file-template the_file_chunk_{}.tsv --chunk-size 1000
+			python -m apt_toolkit.construction.chunking --action split_tsv_file --input-path path/to/file --input-file the_file.tsv --output-path path/to/output --output-file-template the_file_chunk_{}.tsv --chunk-size 1000
 	
 	_Usage from code:_
 		
@@ -39,7 +39,7 @@ _Further note, the pipeline currently is only tested with the `Stanford Parser`.
 		
 * **Converting the output `conll` files to APT compatible `conll` files**
 	
-	see `construction/bash/convert_stanford_conll_to_apt_conll.sh`
+	see `apt_toolkit/construction/bash/convert_stanford_conll_to_apt_conll.sh`
 	
 	_Comments:_
 	
@@ -62,7 +62,7 @@ _Further note, the pipeline currently is only tested with the `Stanford Parser`.
 
 * **Construct the APT Lexicon**
 	
-	see `construction/bash/chunked_construct.sh`
+	see `apt_toolkit/construction/bash/chunked_construct.sh`
 	
 	_Usage:_ 
 		
@@ -70,7 +70,7 @@ _Further note, the pipeline currently is only tested with the `Stanford Parser`.
 		
 * **Create Vectors from Lexicon**
 	
-	see `vectorisation/bash/vectors.sh`
+	see `apt_toolkit/vectorisation/bash/vectors.sh`
 	
 	_Comments:_
 	
