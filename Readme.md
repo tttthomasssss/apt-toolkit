@@ -1,11 +1,13 @@
 
-#### Dependencies
+## Dependencies
 	
 _TBD_
 
-#### Recommended Setup
+## Recommended Setup
 	
 _TBD_
+
+## General Documentation
 
 #### Instructions for running for pre-processing a corpus, constructing an APT Lexicon and creating vectors
 
@@ -78,6 +80,6 @@ _Further note, the pipeline currently is only tested with the `Stanford Parser`.
 	
 		./vectors.sh path/to/apt_lexicon path/to/output_vectors.tsv path/to/apt_jarfile
 
-#### Resources
+## Resources
 	
 _TBD_
