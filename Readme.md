@@ -31,7 +31,7 @@ _Further note, the pipeline currently is only tested with the `Stanford Parser`.
 
 * **Parsing the chunks**
 
-	see `construction/bash/parse_chunks.sh`
+	see `apt_toolkit/construction/bash/parse_chunks.sh`
 	
 	_Usage:_
 		
