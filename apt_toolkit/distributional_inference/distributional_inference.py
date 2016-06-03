@@ -113,7 +113,7 @@ def wordnet_synsets(vectors, words, num_neighbours, alpha='auto', nn_metric='cos
 	"""
 	Perform smoothing by associative inference
 	:param vectors: Original elementary APTs
-	:param words: Lexemes of interest to apply distributional inference on (pass None for all lexemes)
+	:param words: Lexemes of interest to apply distributional inference on (pass None for all lexemes), !!!Need to be (word, pos) tuples!!!
 	:param num_neighbours: Maximum number of neighbours used for distributional inference
 	:param alpha: weighting of original vector (default='auto', which multiplies the original vectors by `num_neighbours`)
 	:param nn_metric: nearest neighbour metric to use (default='cosine'; supported are 'cosine' and 'euclidean')
