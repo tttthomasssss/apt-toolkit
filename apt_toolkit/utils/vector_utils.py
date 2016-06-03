@@ -42,7 +42,7 @@ def split_path_from_word(event, universal_deps=[]):
         return event.rsplit(':', 1)
 
 
-def apply_offset_path(path, offset, incompatible_paths='ignore'):
+def apply_offset_path(path, offset, incompatible_paths='strict'):
     '''
     :param path: dependency path feature
     :param offset: offset path
@@ -67,7 +67,7 @@ def apply_offset_path(path, offset, incompatible_paths='ignore'):
     return offset_path
 
 
-def create_offset_vector(vector, offset_path, incompatible_paths='ignore'):
+def create_offset_vector(vector, offset_path, incompatible_paths='strict'):
     # Translate from my notation to Dave's notation
     if (offset_path.startswith('!')):
         offset_path = '_' + offset_path[1:]
@@ -136,37 +136,3 @@ def save_vector_cache(vectors, vector_out_file, filetype='', **kwargs):
                     data_file.commit()
     else:
         raise NotImplementedError
-
-
-def calculate_similarity(c_1, c_2, dist_fn, logging=None, return_distances=False):
-    c_1 = c_1 if not sparse.issparse(c_1) else c_1.A.squeeze()
-    c_2 = c_2 if not sparse.issparse(c_2) else c_2.A.squeeze()
-
-    if (type(c_1) != np.ndarray and type(c_2) != np.ndarray):
-        v1_array = array.array('f')
-        v2_array = array.array('f')
-
-        for feat in (set(c_1.keys()) | set(c_2.keys())):
-            v1_array.append(c_1.get(feat, 0.))
-            v2_array.append(c_2.get(feat, 0.))
-
-        # Compare similarity
-        v1 = np.array(v1_array)
-        v2 = np.array(v2_array)
-    else:
-        v1 = c_1
-        v2 = c_2
-
-    if (len(v1) > 0 and len(v2) > 0):
-        dist = dist_fn(v1, v2)
-
-        # if one of the vectors is all zeros, the distance function will return nan
-        if (math.isnan(dist) or math.isinf(dist)):
-            dist = 1.
-    else:
-        dist = 1.
-
-    if (logging is not None):
-        logging.info('\tSimilarity (len v1={}/ len v2={}): {}'.format(len(v1), len(v2), 1 - dist))
-
-    return dist if return_distances else 1. - dist

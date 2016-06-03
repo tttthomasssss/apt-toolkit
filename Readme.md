@@ -1,85 +1,68 @@
-
 ## Dependencies
 	
-_TBD_
+The code relies on several 3rd party libraries:
 
-## Recommended Setup
+* numpy
+* scipy
+* scikit-learn
+* dill
+* joblib
+* nltk
+* sqlitedict
 	
-_TBD_
+In addition the following code (which has its own dependencies) is necessary for performing distributional inference:
 
-## General Documentation
+* DiscoUtils: `https://github.com/tttthomasssss/DiscoUtils` or from the original repository: `https://github.com/mbatchkarov/DiscoUtils` (both should be fine, if in doubt the forked version by tttthomasssss should work)
 
-#### Instructions for running for pre-processing a corpus, constructing an APT Lexicon and creating vectors
+----
 
-_These instructions pre-supposes that the base file is in `tsv` format and contains 1 article/book/document per line._
-_Further note, the pipeline currently is only tested with the `Stanford Parser`._
+## Installation
 
+Apart from `DiscoUtils` which needs to be installed manually, all requirements as well as the codebase itself can be installed with:
+	
+	cd path/to/apt-toolkit
+	pip install -e .
 
-* **Splitting the full file into chunks**
-
-	see `apt_toolkit/construction/chunking.py`
-	
-	_Usage as script:_
-	
-			python -m apt_toolkit.construction.chunking --action split_tsv_file --input-path path/to/file --input-file the_file.tsv --output-path path/to/output --output-file-template the_file_chunk_{}.tsv --chunk-size 1000
-	
-	_Usage from code:_
-		
-		from apt_toolkit.construction import chunking
-		chunking.split_tsv_file(input_path='path/to/file', input_file='the_file.tsv', output_path='path_to_output',
-								output_file_template='the_file_chunk_{}.tsv', chunk_size=1000)
-
-* **Parsing the chunks**
-
-	see `apt_toolkit/construction/bash/parse_chunks.sh`
-	
-	_Usage:_
-		
-		./parse_chunks.sh /path/to/stanford-corenlp path/to/chunks path/to/output
-		
-* **Converting the output `conll` files to APT compatible `conll` files**
-	
-	see `apt_toolkit/construction/bash/convert_stanford_conll_to_apt_conll.sh`
-	
-	_Comments:_
-	
-	This script offers a little more (in)convenience in that it offers whether or not to use PoS Tags and whether or not to use the lemma. Basic usage outputs 4 different flavours of the input `conll` file:
-	
-	1. Lemma & PoS Tag
-	2. Lemma & no PoS Tag
-	3. original Token & PoS Tag
-	4. original Token & no PoS Tag
-	
-	By passing `start` and `stop` options (see `Advanced Usage` below), it can be controlled which and how many of the above options should be executed. Note that it currently is only possible to execute ranges (e.g. 1-3; 2-4, ...) and not individual options (e.g. _only_ 1 and 3).
-	
-	_Usage:_
-	
-		./convert_stanford_conll_to_apt_conll.sh path/to/chunked_and_parsed path/to/output
-		
-	_Advanced Usage (e.g. only execut options 2 (Lemma & no PoS Tag) to 3 (original Token & PoS Tag)):_
-	
-		./convert_stanford_conll_to_apt_conll.sh path/to/chunked_and_parsed path/to/output 2 3
-
-* **Construct the APT Lexicon**
-	
-	see `apt_toolkit/construction/bash/chunked_construct.sh`
-	
-	_Usage:_ 
-		
-		./chunked_construct.sh path/to/apt_compatible_conll_files path/to/output 2 parsed
-		
-* **Create Vectors from Lexicon**
-	
-	see `apt_toolkit/vectorisation/bash/vectors.sh`
-	
-	_Comments:_
-	
-	Pass `-normalise` as the last argument if you want count-normalised vectors (e.g.: `./vectors.sh path/to/apt_lexicon path/to/output_vectors.tsv path/to/apt_jarfile -normalise`)
-	
-	_Usage:_
-	
-		./vectors.sh path/to/apt_lexicon path/to/output_vectors.tsv path/to/apt_jarfile
+----
 
 ## Resources
+
+Vectors from the paper `Improving Sparse Word Representations with Distributional Inference for Semantic Composition` are in the subfolder `resources/vectors`.
+
+----
+
+## Usage
+
+#### Loading vectors:
+
+	from apt_toolkit.utils import vector_utils
 	
-_TBD_
+	vectors = vector_utils.load_vector_cache('path/to/vectors', filetype='dill') # Loads the higher-order dependency-typed vectors as a `dict` of `dicts`
+	
+#### Composing Vectors:
+	
+	from apt_toolkit.composition import mozart
+	from apt_toolkit.utils import vector_utils
+
+	# Load Vectors
+	vectors = vector_utils.load_vector_cache('path/to/vectors', filetype='dill')
+	
+	noun_vector = vectors['quantity']
+	adj_vector = vectors['large']
+	
+	# Suppose we want to compose the AN pair "large quantity" with a an "amod" relation between the adjective and the noun, we first need to offset the adjective by "amod" to align the feature spaces (doing so makes the adjective more look like a noun; the offset needs to be "amod" as the adjective has an inverse "amod" relation to its head noun)
+	offset_vector = vector_utils.create_offset_vector(adj_vector, 'amod')
+	
+	# Now the two vectors can be composed
+	composed_vector = mozart.intersect_apts(offset_vector, noun_vector)
+	
+#### Distributional Inference:
+	
+	from apt_toolkit.distributional_inference import distributional_inference
+	from apt_toolkit.utils import vector_utils
+	
+	# Load Vectors
+	vectors = vector_utils.load_vector_cache('path/to/vectors', filetype='dill')
+	
+	# Use the top 20 neighbours (using the `static top n` approach) to infer unobserved co-occurrence features for the noun "book"
+	rich_book = distributional_inference.static_top_n(vectors=vectors, words=['book'], num_neighbours=20)
