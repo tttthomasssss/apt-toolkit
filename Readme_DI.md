@@ -27,7 +27,17 @@ Apart from `DiscoUtils` which needs to be installed manually, all requirements a
 
 ## Resources
 
-Vectors from the paper `Improving Sparse Word Representations with Distributional Inference for Semantic Composition` are in the subfolder `resources/vectors`.
+Vectors from the EMNLP 2016 paper `Improving Sparse Word Representations with Distributional Inference for Semantic Composition` are in the subfolder `resources/vectors`.
+
+The folder contains 5 files:
+
+* `APT_ML2010_AN.dill.xz`: Composed AN vectors (using 1000 neighbours), keys are prefixed with `__CV_`.
+* `APT_ML2010_NN.dill.xz`: Composed NN vectors (using 10 neighbours), keys are prefixed with `__CV_`
+* `APT_ML2010_VO.dill.xz`: Composed VO vectors (using 50 neighbours), keys are prefixed with `__CV_`
+* `APT_wikipedia_clean_shift-10.dill.xz`: Raw APT vectors, with an SPPMI shift of `log(10)`.
+* `APT_wikipedia_clean_shift-40.dill.xz`: Raw APT vectors, with an SPPMI shift of `log(40)`.
+
+All files have been compressed with [`xz`](http://imoverclocked.blogspot.co.at/2015/12/for-love-of-bits-stop-using-gzip.html). All files can be read with the supplied code by using `vector_utils.load_vector_cache()` (see below).
 
 ----
 
